@@ -1,5 +1,6 @@
 # 🌉 MCP Ops Bridge — Enterprise AI Infrastructure Gateway
 
+[![CI](https://github.com/Alemarpapa/mcp-ops-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/Alemarpapa/mcp-ops-bridge/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Standard%20v1.0-purple.svg)](https://modelcontextprotocol.io/)
 [![Vitest](https://img.shields.io/badge/Tested%20with-Vitest-yellow.svg?logo=vitest&logoColor=white)](https://vitest.dev/)
