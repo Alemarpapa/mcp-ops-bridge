@@ -62,10 +62,10 @@ export function registerOpsTools(server: McpServer) {
           };
         }
 
-        db.prepare('UPDATE services SET replicas = ?, latency_p99_ms = latency_p99_ms * 0.6, error_rate_pct = error_rate_pct * 0.5, status = "healthy", updated_at = CURRENT_TIMESTAMP WHERE id = ?').run(replicas, service_id);
+        db.prepare(`UPDATE services SET replicas = ?, latency_p99_ms = latency_p99_ms * 0.6, error_rate_pct = error_rate_pct * 0.5, status = 'healthy', updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(replicas, service_id);
         executionDetails = `Scaled replicas from ${service.replicas} to ${replicas}. Telemetry stabilized.`;
       } else if (action === 'restart_service') {
-        db.prepare('UPDATE services SET status = "healthy", cpu_usage_pct = 25.0, error_rate_pct = 0.05, updated_at = CURRENT_TIMESTAMP WHERE id = ?').run(service_id);
+        db.prepare(`UPDATE services SET status = 'healthy', cpu_usage_pct = 25.0, error_rate_pct = 0.05, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(service_id);
         executionDetails = `Graceful rolling restart executed. Memory and CPU reset. Service status set to healthy.`;
       } else if (action === 'purge_cache') {
         db.prepare('UPDATE services SET memory_usage_pct = memory_usage_pct * 0.7, updated_at = CURRENT_TIMESTAMP WHERE id = ?').run(service_id);

@@ -136,4 +136,20 @@ describe('read tools filters', () => {
     const two = JSON.parse((await call('get_business_summary', { limit_days: 2 })).text);
     expect(two.metrics.map((m: any) => m.metric_date)).toEqual(['2026-10-19', '2026-10-18']);
   });
+
+  it('scale_replicas updates replicas and marks the service healthy (regression: SQL quoting)', async () => {
+    const r = await call('execute_remediation', { ...base, service_id: 'svc-checkout', action: 'scale_replicas', replicas: 7, confirm_production: true });
+    expect(r.isError).toBe(false);
+    const after = db.prepare("SELECT * FROM services WHERE id = 'svc-checkout'").get() as any;
+    expect(after.replicas).toBe(7);
+    expect(after.status).toBe('healthy');
+  });
+
+  it('restart_service resets the service to healthy (regression: SQL quoting)', async () => {
+    const r = await call('execute_remediation', { ...base, service_id: 'svc-checkout', action: 'restart_service', confirm_production: true });
+    expect(r.isError).toBe(false);
+    const after = db.prepare("SELECT * FROM services WHERE id = 'svc-checkout'").get() as any;
+    expect(after.status).toBe('healthy');
+    expect(after.cpu_usage_pct).toBe(25);
+  });
 });

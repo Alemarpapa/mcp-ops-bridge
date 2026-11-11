@@ -8,7 +8,7 @@ export function registerResources(server: McpServer) {
     'ops://status/overview',
     async (uri) => {
       const services = db.prepare('SELECT id, name, environment, status, latency_p99_ms FROM services').all() as any[];
-      const incidents = db.prepare('SELECT COUNT(*) as count FROM incident_logs WHERE status != "resolved"').get() as { count: number };
+      const incidents = db.prepare(`SELECT COUNT(*) as count FROM incident_logs WHERE status != 'resolved'`).get() as { count: number };
 
       const content = {
         title: 'Enterprise Infrastructure Status Overview',
