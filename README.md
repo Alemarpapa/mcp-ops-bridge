@@ -101,6 +101,18 @@ npm test
 ```
 All unit tests and guardrail assertion suites run with Vitest.
 
+Real output (Vitest):
+
+```text
+ ✓ should have seeded database with core microservices and incident
+ ✓ should verify production service environment and handle guardrail blocking
+ ✓ should execute remediation and update service status
+ ✓ should log audit record accurately upon execution
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+```
+
 ---
 
 ## 🔌 Connecting to MCP Clients
