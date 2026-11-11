@@ -33,6 +33,7 @@ beforeAll(async () => {
   const dbMod = await import('../src/db.js');
   const { registerMetricsTools } = await import('../src/tools/metrics.js');
   const { registerOpsTools } = await import('../src/tools/ops.js');
+  const { registerResources } = await import('../src/tools/resources.js');
   process.chdir(originalCwd);
   db = dbMod.db;
   dbMod.initDatabase();
@@ -40,6 +41,7 @@ beforeAll(async () => {
   const server = new McpServer({ name: 'test', version: '1.0.0' });
   registerMetricsTools(server);
   registerOpsTools(server);
+  registerResources(server);
   const [clientT, serverT] = InMemoryTransport.createLinkedPair();
   client = new Client({ name: 'test-client', version: '1.0.0' });
   await Promise.all([server.connect(serverT), client.connect(clientT)]);
@@ -151,5 +153,13 @@ describe('read tools filters', () => {
     const after = db.prepare("SELECT * FROM services WHERE id = 'svc-checkout'").get() as any;
     expect(after.status).toBe('healthy');
     expect(after.cpu_usage_pct).toBe(25);
+  });
+
+  it('ops://status/overview counts only unresolved incidents (regression: SQL quoting)', async () => {
+    const expected = (db.prepare(`SELECT COUNT(*) as c FROM incident_logs WHERE status != 'resolved'`).get() as any).c;
+    const res: any = await client.readResource({ uri: 'ops://status/overview' });
+    const body = JSON.parse(res.contents[0].text);
+    expect(body.unresolved_incidents).toBe(expected);
+    expect(body.total_services).toBeGreaterThan(0);
   });
 });
